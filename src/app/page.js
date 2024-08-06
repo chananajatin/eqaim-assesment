@@ -10,7 +10,7 @@ export default function Home() {
     const formData = new FormData();
     formData.append("file", file);
     const response = await axios.post(
-      "http://localhost:3001/api/excel",
+      "http://localhost:3000/api/excel",
       formData,
       {
         headers: {
