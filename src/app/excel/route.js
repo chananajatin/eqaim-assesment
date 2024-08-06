@@ -27,7 +27,6 @@ app.post("/api/excel", upload.single("file"), async (req, res) => {
             celldata: [],
         };
 
-        // Process merged cells
         if (worksheet._merges) {
             Object.keys(worksheet._merges).forEach((mergeKey) => {
                 const mergeRange = worksheet._merges[mergeKey];
@@ -41,21 +40,18 @@ app.post("/api/excel", upload.single("file"), async (req, res) => {
             });
         }
 
-        // Process column widths
         worksheet.columns.forEach((column, index) => {
             if (column.width) {
-                sheetData.config.columnlen[index] = Math.round(column.width * 7.5); // Approximate conversion to pixels
+                sheetData.config.columnlen[index] = Math.round(column.width * 7.5);
             }
         });
 
-        // Process row heights
         worksheet.eachRow((row, rowNumber) => {
             if (row.height) {
                 sheetData.config.rowlen[rowNumber - 1] = Math.round(row.height);
             }
         });
 
-        // Process cells
         worksheet.eachRow((row, rowNumber) => {
             row.eachCell((cell, colNumber) => {
                 const cellData = {
@@ -64,10 +60,8 @@ app.post("/api/excel", upload.single("file"), async (req, res) => {
                     v: {},
                 };
 
-                // Handle cell value
                 cellData.v.v = cell.text || cell.value;
 
-                // Handle background color
                 if (
                     cell.fill &&
                     cell.fill.type === "pattern" &&
@@ -77,7 +71,6 @@ app.post("/api/excel", upload.single("file"), async (req, res) => {
                         rgbToHex(cell.fill.fgColor) || rgbToHex(cell.fill.bgColor);
                 }
 
-                // Handle font properties
                 if (cell.font) {
                     cellData.v.bl = cell.font.bold ? 1 : 0;
                     cellData.v.it = cell.font.italic ? 1 : 0;
@@ -87,13 +80,11 @@ app.post("/api/excel", upload.single("file"), async (req, res) => {
                     cellData.v.ul = cell.font.underline ? 1 : 0;
                 }
 
-                // Handle alignment
                 if (cell.alignment) {
                     cellData.v.vt = getVerticalAlignment(cell.alignment.vertical);
                     cellData.v.ht = getHorizontalAlignment(cell.alignment.horizontal);
                 }
 
-                // Handle number format
                 if (cell.numFmt) {
                     cellData.v.fm = cell.numFmt;
                 }

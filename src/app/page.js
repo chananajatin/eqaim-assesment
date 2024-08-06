@@ -31,7 +31,7 @@ export default function Home() {
           alignment: cell.style.alignment,
           border: cell.style.border,
         },
-        mc: cell.mergedCells ? { r: 0, c: 0 } : undefined, // You'll need to calculate actual merge areas
+        mc: cell.mergedCells ? { r: 0, c: 0 } : undefined,
       }))
     );
   };
